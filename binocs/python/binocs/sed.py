@@ -163,6 +163,7 @@ def summarize(results, binary, singles):
 	
 		# Find best-fit single star
 		smchi = np.median(singlechi)
+		singleidx = singleidx.astype(int)
 		if smchi > 0:
 			mass = [singles[singleidx[l],0] for l in range(len(singlechi)) if singlechi[l] > 0]
 			smass = np.median(mass)
@@ -183,6 +184,7 @@ def summarize(results, binary, singles):
 		# Star is a cluster member
 		else:
 			# Find best-fit primary mass
+			staridx = staridx.astype(int)
 			pri = [binary[staridx[l],0] for l in range(len(starchi)) if starchi[l] > 0]
 			mpri = np.median(pri)
 			if len(pri) > 1: upri = np.std(pri)

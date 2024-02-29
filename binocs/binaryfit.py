@@ -68,14 +68,14 @@ print("    Pct Singles Detected: %.1f" % (100*nsinfit/nsin))
 # Minimum Mass Ratio Determination
 # Synthetic Fit Threshold
 minq_dm = 0.05
-minq_synth = np.zeros(max(binary[:,0])//minq_dm+1)
+minq_synth = np.zeros(int(max(binary[:,0])//minq_dm+1))
 for m in range(len(minq_synth)):
 	binqs = [synth_summary[x,2] / synth_summary[x,0] for x in range(synth_summary.shape[0]) if synth_summary[x,0] > 0 and binary[x,0]//minq_dm == m and binary[x,1] == 0]
 	if len(binqs) == 0: continue
 	minq_synth[m] = max(binqs)
 
 # Minimum Model Threshold
-minq_mod = np.zeros(max(binary[:,0])//minq_dm+1)
+minq_mod = np.zeros(int(max(binary[:,0])//minq_dm+1))
 minmass = min(binary[:,0])
 for m in range(len(minq_mod)):
 	if m*minq_dm > minmass: minq_mod[m] = minmass/(m*minq_dm+minq_dm/2)
@@ -91,12 +91,13 @@ print("\nUpdating results...")
 print("    Writing updated results to '%s--results.txt'" % (options['data']))
 out = open(options['data']+"--results.txt", 'w')
 for s in range(mag.shape[0]):
+	
 	# Determine new binary flag and masses
 	if summary[s,0] == 0:
 		# This star is a non-member
 		mpri, mprie, msec, msece = 0, 0, 0, 0
 		bflag = summary[s,8]
-	elif summary[s,2] < minmass or summary[s,2] / summary[s,0] < minq_synth[summary[s,0]//minq_dm] or summary[s,8] == 1:
+	elif summary[s,2] < minmass or summary[s,2] / summary[s,0] < minq_synth[int(summary[s,0]//minq_dm)] or summary[s,8] == 1:
 		# This star is a single
 		mpri, mprie, msec, msece = summary[s,5], summary[s,6], 0, 0
 		bflag = 1
