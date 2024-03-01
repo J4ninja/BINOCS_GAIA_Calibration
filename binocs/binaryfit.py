@@ -6,6 +6,7 @@ import sys, binocs
 # Read in data from files
 options = binocs.readopt((sys.argv)[1])
 info, mag = binocs.readdata(options)
+exit()
 oiso = binocs.readiso(options)
 
 # Interpolate isochrone to new mass grid

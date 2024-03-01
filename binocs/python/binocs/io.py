@@ -1,6 +1,7 @@
 # BINOCS file read-in subroutines
 from __future__ import print_function, division
 import numpy as np
+import pandas as pd
 import sys
 
 def readopt(optname):
@@ -65,34 +66,78 @@ def readdata(options):
 	             mag -- matrix of UBVRIugrizJHK[3][4][5][8] magnitudes + uncertainties
 	'''
 	
-	print("\nReading in data from file...", end='')
+	print("\nReading in data from file...")
 	sys.stdout.flush()
 
+	options_df = pd.read_csv(options['data'], delimiter=r'\s+', header=None)
+
+	# Condition for replacement
+	condition_U = options_df.iloc[:, 48] == 'U'
+	condition_SM = options_df.iloc[:, 48] == 'SM'
+	condition_BM = options_df.iloc[:, 48].isin(['BM', 'BLM'])
+
+	# Replacement values
+	options_df.loc[condition_U, 48] = 0
+	options_df.loc[condition_SM, 48] = 1
+	options_df.loc[condition_BM, 48] = 2
+	options_df.loc[~(condition_U | condition_SM | condition_BM), 48] = -1
+	
+	# print(options_df)
+	# print(len(options_df))
+	# print(options_df.iloc[0])
+
 	# Read in star data from file
-	df = open(options['data'], 'r')
-	lines = df.read().splitlines()
-	df.close()
-	
+
+	# df = open(options['data'], 'r')
+	# lines = df.read().splitlines()
+	# df.close()
+
 	# Create arrays for holding data
-	info = []
-	mag = np.zeros([len(lines), 34])
+	info_columns = ["2Mass ID", "RA", "DEC", "RV"]
+	info_df = options_df.iloc[:, [0, 1, 2, 48]].copy()
+	info_df.columns = info_columns
+	# mag_colnames = ['U', 'U_err', 'B', 'B_err', 'V', 'V_err', 'R', 'R_err', 'I', 'I_err', 'SU', 'SU_err', 'SG', 'SG_err'  'SR', 'SR_err', 'SI', 'SI_err', 'SZ', 'SZ_err', 'J', 'J_err', 'H', 'H_err', 'K', 'K_err', 'B1', 'B1_err', 'B2', 'B2_err', 'B3', 'B3_err'   'B4',  'B4_err']
+	mag_colnames = ['U', 'U_err', 'B', 'B_err', 'V',  'V_err', 'R', 'R_err', 'I', 'I_err', 'SU', 'SU_err', 'SG', 'SG_err', 'SR', 'SR_err', 'SI', 'SI_err', 'SZ', 'SZ_err', 'J', 'J_err', 'H', 'H_err', 'K', 'K_err', 'B1', 'B1_err', 'B2', 'B2_err', 'B3', 'B3_err', 'B4', 'B4_err']
+	mag_df = options_df.iloc[:,3:37].copy()
+	mag_df.columns = mag_colnames
+
+	# print(info_df)
+	# print("len of info", len(info_df))
+
+	# # mag = np.zeros([len(lines), 34])
+	# for _, row in dataframe.iterrows():
+    #     # Determine RV Variability Index
+	# 	if row.iloc[48] == 'U': 
+	# 		rv = 0
+	# 	elif row.iloc[48] == 'SM': 
+	# 		rv = 1
+	# 	elif row.iloc[48] == 'BM' or row.iloc[48] == 'BLM': 
+	# 		rv = 2
+	# 	else: 
+	# 		rv = -1
+		
+	# 	# Save data to DataFrame
+	# 	mag_row = pd.Series(row.iloc[3:37], index=colnames[3:])
 	
-	for l in range(len(lines)):
-		tmp = lines[l].split()
+	
+	
+
+	# for l in range(len(lines)):
+	# 	tmp = lines[l].split()
 		
-		# Determine RV Variability Index
-		if tmp[48] == 'U': rv = 0
-		elif tmp[48] == 'SM': rv = 1
-		elif tmp[48] == 'BM' or tmp[48] == 'BLM': rv = 2
-		else: rv = -1
+	# 	# Determine RV Variability Index
+	# 	if tmp[48] == 'U': rv = 0
+	# 	elif tmp[48] == 'SM': rv = 1
+	# 	elif tmp[48] == 'BM' or tmp[48] == 'BLM': rv = 2
+	# 	else: rv = -1
 		
-		# Save data to arrays
-		mag[l,:] = tmp[3:37]
-		info.append([tmp[0], float(tmp[1]), float(tmp[2]), rv])
+	# 	# Save data to arrays
+	# 	mag[l,:] = tmp[3:37]
+	# 	info.append([tmp[0], float(tmp[1]), float(tmp[2]), rv])
 	print(" Done.")
 
-	print("    %d stars in file." % (len(info)))
-	return info, mag
+	print("    %d stars in file." % (len(info_df)))
+	return info_df, mag_df
 	
 	
 	
