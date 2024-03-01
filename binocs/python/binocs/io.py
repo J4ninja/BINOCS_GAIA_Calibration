@@ -1,5 +1,6 @@
 # BINOCS file read-in subroutines
 from __future__ import print_function, division
+from typing import Tuple
 import numpy as np
 import pandas as pd
 import sys
@@ -54,7 +55,7 @@ def readopt(optname):
 
 
 
-def readdata(options):
+def readdata(options: dict) -> Tuple[pd.DataFrame, pd.DataFrame]:
 	'''
 	SUBROUTINE:			READDATA
 	DESCRIPTION: Reads in star data from a magnitude file created by PAYST
@@ -84,7 +85,7 @@ def readdata(options):
 	options_df.loc[~(condition_U | condition_SM | condition_BM), 48] = -1
 	
 	# Create info dataframe copying options_dataframe columns: 0,1,2,48
-	info_columns = ["2Mass ID", "RA", "DEC", "RV"]
+	info_columns = ["2MASS ID", "RA", "DEC", "RV"]
 	info_df = options_df.iloc[:, [0, 1, 2, 48]].copy()
 	info_df.columns = info_columns
 	mag_colnames = ['U', 'U_err', 'B', 'B_err', 'V',  'V_err', 'R', 'R_err', 'I', 'I_err', 'SU', 'SU_err', 'SG', 'SG_err', 'SR', 'SR_err', 'SI', 'SI_err', 'SZ', 'SZ_err', 'J', 'J_err', 'H', 'H_err', 'K', 'K_err', 'B1', 'B1_err', 'B2', 'B2_err', 'B3', 'B3_err', 'B4', 'B4_err']
