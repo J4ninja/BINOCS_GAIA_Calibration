@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 import numpy as np
 import sys
-from BinocsModule.Binocs import Binocs
+from Binocs import Binocs
 
 class GUI(tk.Tk):
     def __init__(self):
