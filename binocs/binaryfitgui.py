@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 import numpy as np
 import sys
-from binocs import Binocs
+from BinocsModule.Binocs import Binocs
 
 class GUI(tk.Tk):
     def __init__(self):
@@ -11,13 +11,13 @@ class GUI(tk.Tk):
 
         # Set default values
         self.defaults = {
-            # "data": "ngc_ubvri_ugriz_jhkb_all_query.csv",
-            # "iso": "../../isochrones/new/iso_p001.pc.syn.dat",
-            # "fid": "../../ridgeline/M67/M67.fid.txt",
+            "data": "ngc_ubvri_ugriz_jhkb_all_query.csv",
+            "iso": "../../isochrones/new/iso_p001.pc.syn.dat",
+            "fid": "../../ridgeline/M67/M67.fid.txt",
             "dm": "0.01",
-            # "age": "9.55",
-            # "m-M": "9.66",
-            # "ebv": "0.04",
+            "age": "9.55",
+            "m-M": "9.66",
+            "ebv": "0.04",
             "nruns": "200"
         }
 
