@@ -2,7 +2,8 @@ from __future__ import print_function, division
 import tkinter as tk
 from tkinter import filedialog
 import numpy as np
-import sys, binocs
+import sys
+from binocs import Binocs
 
 class GUI(tk.Tk):
     def __init__(self):
@@ -10,15 +11,17 @@ class GUI(tk.Tk):
 
         # Set default values
         self.defaults = {
-            "data": "ngc_ubvri_ugriz_jhkb_all_query.csv",
-            "iso": "../../isochrones/new/iso_p001.pc.syn.dat",
-            "fid": "../../ridgeline/M67/M67.fid.txt",
+            # "data": "ngc_ubvri_ugriz_jhkb_all_query.csv",
+            # "iso": "../../isochrones/new/iso_p001.pc.syn.dat",
+            # "fid": "../../ridgeline/M67/M67.fid.txt",
             "dm": "0.01",
-            "age": "9.55",
-            "m-M": "9.66",
-            "ebv": "0.04",
+            # "age": "9.55",
+            # "m-M": "9.66",
+            # "ebv": "0.04",
             "nruns": "200"
         }
+
+        self.binocs = Binocs()
 
         # Create labels and entries
         self.entries = {}
@@ -62,9 +65,10 @@ class GUI(tk.Tk):
         options['filternames'] = filter_names
         self.binaryfit(options)
 
-    def binaryfit(options):
-        info, mag = binocs.readdata(options)
-
+    def binaryfit(self, options):
+        info, mag = self.binocs.readdata(options)
+        print(info,mag)
+        exit()
         oiso = binocs.readiso(options)
 
         # Interpolate isochrone to new mass grid
