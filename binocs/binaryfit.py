@@ -6,6 +6,7 @@ import sys, binocs
 # Read in data from files
 options = binocs.readopt((sys.argv)[1])
 info, mag = binocs.readdata(options)
+
 oiso = binocs.readiso(options)
 
 # Interpolate isochrone to new mass grid
@@ -22,15 +23,17 @@ binary = binocs.makebin(singles, options)
 print("\nComputing Initial Results.")
 results = binocs.sedfit(singles, binary, mag, options)
 
+
 # Compute Initial Results
 summary = binocs.summarize(results, binary, singles)
+
 print("    Writing intial results to '%s--binary.txt'" % (options['data']))
-out = open(options['data']+"--binary.txt", "w")
+out = open(options['data']+"--binaryJOHN3.txt", "w")
 for s in range(mag.shape[0]):
 	# Print out star to file
 	outstr = "%16s %9.5f %9.5f " % (info[s][0], info[s][1], info[s][2])
 	for i in range(17): outstr += "%6.3f " % mag[s,2*i]
-	outstr += "   %2d %2d %6.3f %6.4f %6.3f %6.4f %5.2f   %6.3f %6.4f %5.2f" % (summary[s,8], info[s][3], summary[s,0], summary[s,1], summary[s,2], summary[s,3], summary[s,4], summary[s,5], summary[s,6], summary[s,7])
+	outstr += "   %2d %2d %6.3f %6.4f %6.3f %6.4f %5.2f   %6.3f %6.4f %5.2f" % (summary[s,8], 0, summary[s,0], summary[s,1], summary[s,2], summary[s,3], summary[s,4], summary[s,5], summary[s,6], summary[s,7])
 	print(outstr, file=out)
 out.close()
 
@@ -89,9 +92,8 @@ out.close()
 #### UPDATED RESULTS
 print("\nUpdating results...")
 print("    Writing updated results to '%s--results.txt'" % (options['data']))
-out = open(options['data']+"--results.txt", 'w')
+out = open(options['data']+"--resultsJohn1.txt", 'w')
 for s in range(mag.shape[0]):
-	
 	# Determine new binary flag and masses
 	if summary[s,0] == 0:
 		# This star is a non-member
@@ -114,4 +116,3 @@ out.close()
 	
 	
 	
-
