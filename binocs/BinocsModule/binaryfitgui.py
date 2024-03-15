@@ -68,26 +68,26 @@ class GUI(tk.Tk):
     def binaryfit(self, options):
         info, mag = self.binocs.readdata(options)
         print(info,mag)
-        exit()
-        oiso = binocs.readiso(options)
+    
+        oiso = self.binocs.readiso(options)
 
         # Interpolate isochrone to new mass grid
-        singles = binocs.minterp(oiso, options['dm'])
+        singles = self.binocs.minterp(oiso, options['dm'])
 
         # Adjust isochrone to empirical ridgeline, if necessary
-        singles = binocs.fidiso(singles, options)
+        singles = self.binocs.fidiso(singles, options)
 
         # Create binary array
-        binary = binocs.makebin(singles, options)
+        binary = self.binocs.makebin(singles, options)
 
         #### INITIAL BINARY FITTING
         # Run SED fitting on all stars in dataset
         print("\nComputing Initial Results.")
-        results = binocs.sedfit(singles, binary, mag, options)
+        results = self.binocs.sedfit(singles, binary, mag, options)
 
 
         # Compute Initial Results
-        summary = binocs.summarize(results, binary, singles)
+        summary = self.binocs.summarize(results, binary, singles)
 
         print("    Writing intial results to '%s--binary.txt'" % (options['data']))
         out = open(options['data']+"--binaryJOHN3.txt", "w")
@@ -103,13 +103,13 @@ class GUI(tk.Tk):
         print("\nComputing Synthetic Results.")
 
         # Create synthetic library
-        synth = binocs.makesynth(mag, binary, options)
+        synth = self.binocs.makesynth(mag, binary, options)
 
         # Run SED fitting on synthetic library
-        synth_results = binocs.sedfit(singles, binary, synth, options)
+        synth_results = self.binocs.sedfit(singles, binary, synth, options)
             
         # Compute Synthetic Results
-        synth_summary = binocs.summarize(synth_results, binary, singles)
+        synth_summary = self.binocs.summarize(synth_results, binary, singles)
         print("    Writing synthetic results to '%s--synth.txt'" % (options['data']))
         out = open(options['data']+"--synth.txt", "w")
         for s in range(synth.shape[0]):
