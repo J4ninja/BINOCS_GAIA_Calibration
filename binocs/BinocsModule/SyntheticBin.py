@@ -5,7 +5,7 @@ import sys
 # BINOCS synthetic dataset creation routines
 class SyntheticBin:
 
-    def makebin(iso, options, file_output=True):
+    def makebin(self, iso, options, file_output=True):
         '''
         SUBROUTINE:			MAKEBIN
         DESCRIPTION: Flux-combines single isochrone stars into model binaries
@@ -78,7 +78,7 @@ class SyntheticBin:
 
 
 
-    def makesynth(mag, binary, options):
+    def makesynth(self, mag, binary, options):
         '''
         SUBROUTINE:			MAKESYNTH
         DESCRIPTION: Generates synthetic star dataset for testing routines.

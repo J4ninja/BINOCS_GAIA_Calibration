@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog
 import numpy as np
 import sys
-from Binocs import Binocs
+from BinocsModule.BinocsInterface import BinocsInterface
 
 class GUI(tk.Tk):
     def __init__(self):
@@ -21,7 +21,7 @@ class GUI(tk.Tk):
             "nruns": "200"
         }
 
-        self.binocs = Binocs()
+        self.binocs = BinocsInterface()
 
         # Create labels and entries
         self.entries = {}
