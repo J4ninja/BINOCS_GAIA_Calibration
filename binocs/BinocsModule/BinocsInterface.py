@@ -1,13 +1,13 @@
 # BINOCS Interface wraps submodule implementations into a single implementation
 from __future__ import print_function, division
-from Io import Io
-from SyntheticBin import SyntheticBin
-from Iso import Iso
-from Kernel import Kernel
-from MakeIso import MakeIso
-from Sed import Sed
-from Payst import Payst
-from Printer import Printer
+from BinocsModule.Io import Io
+from BinocsModule.SyntheticBin import SyntheticBin
+from BinocsModule.Iso import Iso
+from BinocsModule.Kernel import Kernel
+from BinocsModule.MakeIso import MakeIso
+from BinocsModule.Sed import Sed
+from BinocsModule.Payst import Payst
+from BinocsModule.Printer import Printer
 
 class BinocsInterface:
     def __init__(self):

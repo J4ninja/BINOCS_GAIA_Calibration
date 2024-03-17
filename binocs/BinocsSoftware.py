@@ -149,9 +149,10 @@ class GUI(tk.Tk):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Launch BINOCS GUI")
-    parser.add_argument("-g", "--gui", action="store_true", help="Launch GUI")
-    parser.add_argument("-o", "--opt_file", metavar="OPT_FILE", help="Specify an .opt file")
+    parser = argparse.ArgumentParser(description="Launch BINOCS GUI", usage="%(prog)s [-h] (-g | -o OPT_FILE)")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("-g", "--gui", action="store_true", help="Launch GUI")
+    group.add_argument("-o", "--opt", metavar="OPT_FILE", help="Specify an .opt file")
     args = parser.parse_args()
 
     binocs_software = BinocsSoftware()
@@ -167,7 +168,7 @@ def main():
             print("Error: The specified .opt file does not exist.")
             return
         # Read and process the .opt file
-        binocs_software.binaryfit(args.optfile)
+        binocs_software.binaryfit(args.opt_file)
 
 if __name__ == "__main__":
     main()

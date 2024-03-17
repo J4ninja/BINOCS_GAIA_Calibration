@@ -95,7 +95,8 @@ class Io:
             "2Mass Name" : options_df["2Mass Name"],
             "ra" : options_df["ra"],
             "dec": options_df["dec"],
-            # "rv" : options_df["rv"]
+            # "rv" : options_df["rv"],
+            "rv": 0
         })
 
         mag_df = pd.DataFrame({
@@ -135,7 +136,8 @@ class Io:
             'B4_err' : options_df['B4_err'],
         })
 
-        mag_df = mag_df.fillna(99.99999999999999)
+        mag_df = mag_df.fillna(99.999)
+        info_df = info_df.fillna(99.999)
 
         print("    %d stars in file." % (len(info_df)))
         return info_df.to_numpy(), mag_df.to_numpy()

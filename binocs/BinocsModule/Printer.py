@@ -3,7 +3,7 @@ class Printer():
 
     def print_initial_results(self, options, mag, info, summary):
         print("    Writing intial results to '%s--binary.txt'" % (options['data']))
-        out = open(options['data']+"--binaryJOHN3.txt", "w")
+        out = open(options['data']+"--binary.txt", "w")
         for s in range(mag.shape[0]):
             # Print out star to file
             outstr = "%16s %9.5f %9.5f " % (info[s][0], info[s][1], info[s][2])
@@ -32,7 +32,7 @@ class Printer():
 
     def print_final_results(self, options, mag, summary, minmass, minq_synth, minq_dm, info):
         print("    Writing updated results to '%s--results.txt'" % (options['data']))
-        out = open(options['data']+"--resultsJohn1.txt", 'w')
+        out = open(options['data']+"--results.txt", 'w')
         for s in range(mag.shape[0]):
             # Determine new binary flag and masses
             if summary[s,0] == 0:
