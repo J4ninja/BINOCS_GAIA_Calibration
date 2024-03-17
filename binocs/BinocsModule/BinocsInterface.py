@@ -8,6 +8,8 @@ from BinocsModule.MakeIso import MakeIso
 from BinocsModule.Sed import Sed
 from BinocsModule.Payst import Payst
 from BinocsModule.Printer import Printer
+from BinocsModule.Query import Query
+from astropy import units as u
 
 class BinocsInterface:
     def __init__(self):
@@ -19,6 +21,7 @@ class BinocsInterface:
         self.sed = Sed()
         self.payst = Payst()
         self.printer = Printer()
+        self.query = Query()
 
     def makebin(self, iso, options, file_output=True):
         '''
@@ -154,3 +157,15 @@ class BinocsInterface:
 
     def print_final_results(self, options, mag, summary, minmass, minq_synth, minq_dm, info):
         self.printer.print_final_results(options, mag, summary, minmass, minq_synth, minq_dm, info)
+
+    def build_data_file_from_twomass(self, twomass_id_list, out_file_name):
+        self.query.build_data_file_from_twomass(twomass_id_list, out_file_name)
+
+    def build_data_file_from_gaia(self, gaia_id_list, out_file_name):
+        self.query.build_data_file_from_gaia(gaia_id_list, out_file_name)
+
+    def build_data_file_from_cluster(self, cluster, out_file_name, radius=10*u.arcmin):
+        self.query.build_data_file_from_cluster(cluster, out_file_name, radius)
+
+    def build_data_file_from_ra_dec(self, ra, dec, out_file_name, radius=10*u.arcmin):
+        self.query.build_data_file_from_ra_dec(ra, dec, out_file_name, radius)

@@ -1,6 +1,7 @@
 from __future__ import print_function, division
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import ttk
 import numpy as np
 import argparse
 import os
@@ -93,8 +94,27 @@ class GUI(tk.Tk):
         super().__init__()
         self.binocs = binocsController
 
+        self.geometry("800x600")
+
+        # Create notebook (tabs)
+        self.notebook = ttk.Notebook(self)
+        self.notebook.grid(row=0, column=0, columnspan=3, sticky="nsew")
+
+        # Add tabs
+        self.sed_tab = ttk.Frame(self.notebook)
+        self.build_data_tab = ttk.Frame(self.notebook)
+        self.notebook.add(self.sed_tab, text="SED Fit")
+        self.notebook.add(self.build_data_tab, text="Build Data")
+
+        # Create widgets for SED tab
+        self.create_sed_widgets(self.sed_tab)
+
+        # Create widgets for Build Data tab
+        self.create_build_data_widgets(self.build_data_tab)
+
+    def create_sed_widgets(self, parent):
         # Set default values
-        self.defaults = {
+        defaults = {
             "data": "ngc_ubvri_ugriz_jhkb_all_query.csv",
             "iso": "../../isochrones/new/iso_p001.pc.syn.dat",
             "fid": "../../ridgeline/M67/M67.fid.txt",
@@ -106,24 +126,43 @@ class GUI(tk.Tk):
         }
 
         # Create labels and entries
-        self.entries = {}
-        for i, (label_text, default_value) in enumerate(self.defaults.items()):
-            label = tk.Label(self, text=label_text)
+        entries = {}
+        for i, (label_text, default_value) in enumerate(defaults.items()):
+            label = tk.Label(parent, text=label_text)
             label.grid(row=i, column=0, sticky="w", padx=5, pady=5)
 
-            entry = tk.Entry(self)
+            entry = tk.Entry(parent)
             entry.insert(0, default_value)
-            entry.grid(row=i, column=1, padx=5, pady=5)
-            self.entries[label_text] = entry
+            entry.grid(row=i, column=1, padx=10, pady=10)
+            entries[label_text] = entry
 
             # Add browse button for file fields
             if label_text in ["data", "iso", "fid"]:
-                button = tk.Button(self, text="Browse", command=lambda label=label_text: self.browse_file(label))
-                button.grid(row=i, column=2, padx=5, pady=5)
+                button = tk.Button(parent, text="Browse", command=lambda label=label_text: self.browse_file(label))
+                button.grid(row=i, column=2, padx=10, pady=10)
 
         # Add submit button
-        submit_button = tk.Button(self, text="Submit", command=self.submit)
-        submit_button.grid(row=len(self.defaults), columnspan=3, padx=5, pady=10)
+        submit_button = tk.Button(parent, text="Submit", command=self.submit)
+        submit_button.grid(row=len(defaults), columnspan=3, padx=5, pady=10)
+
+        # Store entries for later use
+        self.entries = entries
+
+    def create_build_data_widgets(self, parent):
+        id_list_label = tk.Label(parent, text="Id List")
+        id_list_label.grid(row=0, column=0, sticky="w", padx=10, pady=10)
+        id_list_entry = tk.Text(parent, font=("Arial", 12), width=50, height=10)
+        id_list_entry.grid(row=0, column=1, padx=10, pady=10)
+
+        # Create dropdown for choosing Id type
+        # id_type_var = tk.StringVar()
+        id_types = ["Id Type (Required)", "Gaia Source Id", "2Mass Id"]
+        id_type_dropdown = ttk.Combobox(parent, values=id_types, state="readonly")
+        id_type_dropdown.set("Default")
+        id_type_dropdown.grid(row=0, column=2, padx=5, pady=5)
+
+        # Set initial selection
+        id_type_dropdown.current(0)
 
     def browse_file(self, label_text):
         filename = filedialog.askopenfilename()
@@ -160,7 +199,7 @@ def main():
     if args.gui:
         controller = BinocsController(binocs_software)
         app = GUI(controller)
-        app.title("BINOCS GUI")
+        app.title("BINOCS Software GUI")
         app.mainloop()
     
     elif args.opt_file:
