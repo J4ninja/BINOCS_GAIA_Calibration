@@ -7,6 +7,7 @@ from Kernel import Kernel
 from MakeIso import MakeIso
 from Sed import Sed
 from Payst import Payst
+from Printer import Printer
 
 class BinocsInterface:
     def __init__(self):
@@ -17,6 +18,7 @@ class BinocsInterface:
         self.makeiso = MakeIso()
         self.sed = Sed()
         self.payst = Payst()
+        self.printer = Printer()
 
     def makebin(self, iso, options, file_output=True):
         '''
@@ -41,7 +43,7 @@ class BinocsInterface:
 
         return self.io.readopt(optname)
 
-    def readdataframe(self, options: dict) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    def readdataframe(self, options: dict):
         '''
         SUBROUTINE:			READDATA
         DESCRIPTION: Reads in star data from a magnitude file created by PAYST
@@ -140,3 +142,15 @@ class BinocsInterface:
         DESCRIPTION: Trims matched PAYST dataset
         '''
         self.payst.paysttrim(catalog)
+
+    def print_initial_results(self, options, mag, info, summary):
+        self.printer.print_initial_results(options, mag, info, summary)
+
+    def print_synthetic_results(self, options, synth, binary, synth_summary):
+        self.printer.print_synthetic_results(options, synth, binary, synth_summary)
+
+    def print_minimum_mass_ratios(self, options, minq_synth, minq_dm, minq_mod):
+        self.printer.print_minimum_mass_ratios(options, minq_synth, minq_dm, minq_mod)
+
+    def print_final_results(self, options, mag, summary, minmass, minq_synth, minq_dm, info):
+        self.printer.print_final_results(options, mag, summary, minmass, minq_synth, minq_dm, info)
