@@ -417,6 +417,7 @@ class Query:
         })
                 
         merged_df = pd.merge(merged_df, irsa_df, on="K_mag", how="inner")
+        print(merged_df.columns)
         synthetic = self.gaia_query_binocs_ids(merged_df["source_id"])
         self.calculate_mag_errors_synthetic(synthetic_photometry=synthetic)
         final_df = pd.merge(synthetic, merged_df, on="source_id", how="inner")
