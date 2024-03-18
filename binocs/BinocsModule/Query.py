@@ -1,4 +1,3 @@
-# Import GaiaXPy Photometric Generator 
 from gaiaxpy import generate, PhotometricSystem, plot_spectra
 from astropy.io import fits
 from astropy.io import votable
@@ -12,6 +11,7 @@ import pandas as pd
 from astroquery.gaia import Gaia
 from astroquery.ipac.irsa import Irsa
 from astropy.table import hstack
+from astroquery.utils.tap.core import TapPlus
 
 
 pd.set_option('display.float_format', '{:.14f}'.format)
@@ -422,8 +422,8 @@ class Query:
         final_df = pd.merge(synthetic, merged_df, on="source_id", how="inner")
         final_df.to_csv(out_file_name, index=False)
 
-    def build_data_file_from_ra_dec(self, ra, dec, out_file_name, radius=10*u.arcmin):
-        coords = SkyCoord(ra=ra, dec=dec, frame='icrs')
+    def build_data_file_from_ra_dec(self, ra, dec, out_file_name, frame, radius=10*u.arcmin):
+        coords = SkyCoord(ra=ra, dec=dec, frame=frame)
         irsa_data = Irsa.query_region(coords, catalog="fp_psc", spatial="Cone", radius=radius)
         twomass_df = pd.DataFrame({
             '2Mass Name': irsa_data['designation'],

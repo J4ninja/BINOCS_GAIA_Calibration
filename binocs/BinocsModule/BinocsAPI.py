@@ -1,5 +1,7 @@
 # BINOCS Interface wraps submodule implementations into a single implementation
 from __future__ import print_function, division
+from __future__ import print_function, division
+import subprocess
 from BinocsModule.Io import Io
 from BinocsModule.SyntheticBin import SyntheticBin
 from BinocsModule.Iso import Iso
@@ -10,8 +12,9 @@ from BinocsModule.Payst import Payst
 from BinocsModule.Printer import Printer
 from BinocsModule.Query import Query
 from astropy import units as u
+import numpy as np
 
-class BinocsInterface:
+class BinocsAPI:
     def __init__(self):
         self.io = Io()
         self.bin = SyntheticBin()
@@ -164,8 +167,104 @@ class BinocsInterface:
     def build_data_file_from_gaia(self, gaia_id_list, out_file_name):
         self.query.build_data_file_from_gaia(gaia_id_list, out_file_name)
 
-    def build_data_file_from_cluster(self, cluster, out_file_name, radius=10*u.arcmin):
+    def build_data_file_from_cluster(self, cluster, radius_num, radius_unit, out_file_name):
+        if radius_unit == "arcmin":
+            radius = int(radius_num)*u.arcmin
+        elif radius_unit == "arcsec":
+            radius = int(radius_num)*u.arcsec
         self.query.build_data_file_from_cluster(cluster, out_file_name, radius)
 
-    def build_data_file_from_ra_dec(self, ra, dec, out_file_name, radius=10*u.arcmin):
-        self.query.build_data_file_from_ra_dec(ra, dec, out_file_name, radius)
+    def build_data_file_from_ra_dec(self, ra, dec, frame, radius_num, radius_unit, out_file_name):
+        if radius_unit == "arcmin":
+            radius = int(radius_num)*u.arcmin
+        elif radius_unit == "arcsec":
+            radius = int(radius_num)*u.arcsec
+        self.query.build_data_file_from_ra_dec(ra, dec, out_file_name,frame,radius)
+
+    def binaryfit(self, options):
+        info, mag = self.readdataframe(options)
+
+        oiso = self.readiso(options)
+
+        # Interpolate isochrone to new mass grid
+        singles = self.minterp(oiso, options['dm'])
+
+        # Adjust isochrone to empirical ridgeline, if necessary
+        singles = self.fidiso(singles, options)
+
+        # Create binary array
+        binary = self.makebin(singles, options)
+
+        #### INITIAL BINARY FITTING
+        # Run SED fitting on all stars in dataset
+        print("\nComputing Initial Results.")
+        results = self.sedfit(singles, binary, mag, options)
+
+
+        # Compute Initial Results
+        summary = self.summarize(results, binary, singles)
+
+        self.print_initial_results(options, mag, info, summary)
+
+        #### SYNTHETIC LIBRARY FITTING
+        print("\nComputing Synthetic Results.")
+
+        # Create synthetic library
+        synth = self.makesynth(mag, binary, options)
+
+        # Run SED fitting on synthetic library
+        synth_results = self.sedfit(singles, binary, synth, options)
+            
+        # Compute Synthetic Results
+        synth_summary = self.summarize(synth_results, binary, singles)
+
+        self.print_synthetic_results(options, synth, binary, synth_summary)
+
+        #### SYNTHETIC ANALYSIS
+        print("\nAnalyzing Synthetic Results...")
+
+        # % Completion
+        nfit = len(synth_summary[synth_summary[:,0] > 0,0])
+        print("    Pct Detected: %.1f" % (100*nfit/synth_summary.shape[0]))
+        nsin = len(binary[binary[:,1] == 0,0])
+        nsinfit = len([synth_summary[x,0] for x in range(synth_summary.shape[0]) if binary[x,1] == 0 and synth_summary[x,0] > 0])
+        print("    Pct Singles Detected: %.1f" % (100*nsinfit/nsin))
+
+        # Minimum Mass Ratio Determination
+        # Synthetic Fit Threshold
+        minq_dm = 0.05
+        minq_synth = np.zeros(int(max(binary[:,0])//minq_dm+1))
+        for m in range(len(minq_synth)):
+            binqs = [synth_summary[x,2] / synth_summary[x,0] for x in range(synth_summary.shape[0]) if synth_summary[x,0] > 0 and binary[x,0]//minq_dm == m and binary[x,1] == 0]
+            if len(binqs) == 0: continue
+            minq_synth[m] = max(binqs)
+
+        # Minimum Model Threshold
+        minq_mod = np.zeros(int(max(binary[:,0])//minq_dm+1))
+        minmass = min(binary[:,0])
+        for m in range(len(minq_mod)):
+            if m*minq_dm > minmass: minq_mod[m] = minmass/(m*minq_dm+minq_dm/2)
+            
+        self.print_minimum_mass_ratios(options, minq_synth, minq_dm, minq_mod)
+
+        #### UPDATED RESULTS
+        print("\nUpdating results...")
+        self.print_final_results(options, mag, summary, minmass, minq_synth, minq_dm, info)
+
+    def buildIso(self, isopath, outpath):
+        tmp = [x for x in subprocess.check_output("ls "+isopath+"*", shell=True).splitlines() if x.find('.dat') >= 0]
+        if len(tmp) == 0:
+            print("\n!!! Dartmouth Isochrones Detected.\n")
+            self.dartmouth(isopath, outpath)
+        else:
+            testfile = tmp[0]
+            df = open(testfile, 'r')
+            lines = df.read().splitlines()
+            df.close()
+            if lines[1].find('Marigo') >= 0:
+                print("\n!!! Padova Isochrones Detected.\n")
+                self.padova(isopath, outpath)
+            elif lines[1].find('PARSEC') >= 0:
+                print("\n!!! PARSEC Isochrones Detected.\n")
+                self.parsec(isopath, outpath)
+
