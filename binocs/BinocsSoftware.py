@@ -87,9 +87,9 @@ class GUI(tk.Tk):
     def create_sed_widgets(self, parent):
         # Set default values
         defaults = {
-            "data": "ngc_ubvri_ugriz_jhkb_all_query.csv",
-            "iso": "../../isochrones/new/iso_p001.pc.syn.dat",
-            "fid": "../../ridgeline/M67/M67.fid.txt",
+            "data": "./ngc_ubvri_ugriz_jhkb_all_query.csv",
+            "iso": "./iso_p001.pc.syn.dat",
+            "fid": "./M67.fid.txt",
             "dm": "0.01",
             "age": "9.55",
             "m-M": "9.66",
@@ -344,7 +344,8 @@ def main():
             print("Error: The specified .opt file does not exist.")
             return
         # Read and process the .opt file
-        binocs_software.binaryfit(args.opt)
+        options = binocs_software.binocs.readopt(args.opt)
+        binocs_software.binaryfit(options)
     
     elif args.iso:
         isopath, outpath = args.iso

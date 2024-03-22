@@ -1,4 +1,5 @@
 import pandas as pd
+from astropy.table import Table
 class Printer():
 
     def print_initial_results(self, options, mag, info, summary):
@@ -69,5 +70,8 @@ class Printer():
         final_summary_df = pd.DataFrame(final_results, columns=column_names)
         final_results_df = pd.merge(original_df, final_summary_df, on='2Mass Name', how='left')
         final_results_df.to_csv(options["data"]+"--result_df.csv",index=False)
+        final_results_table = Table.from_pandas(final_results_df)
+        print(final_results_table)
+        # final_results_table.write(options['data'] + "--result_table.fits", format='fits', overwrite=True)
 
 

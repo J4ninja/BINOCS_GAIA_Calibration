@@ -158,8 +158,8 @@ class BinocsAPI:
     def print_minimum_mass_ratios(self, options, minq_synth, minq_dm, minq_mod):
         self.printer.print_minimum_mass_ratios(options, minq_synth, minq_dm, minq_mod)
 
-    def print_final_results(self, options, mag, summary, minmass, minq_synth, minq_dm, info):
-        self.printer.print_final_results(options, mag, summary, minmass, minq_synth, minq_dm, info)
+    def print_final_results(self, options, mag, summary, minmass, minq_synth, minq_dm, info, original_df):
+        self.printer.print_final_results(options, mag, summary, minmass, minq_synth, minq_dm, info, original_df)
 
     def build_data_file_from_twomass(self, twomass_id_list, out_file_name):
         self.query.build_data_file_from_twomass(twomass_id_list, out_file_name)
