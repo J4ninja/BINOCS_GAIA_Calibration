@@ -68,7 +68,7 @@ class Printer():
             'Secondary Mass', 'Secondary Mass Uncertainty'
         ]
         final_summary_df = pd.DataFrame(final_results, columns=column_names)
-        final_results_df = pd.merge(original_df, final_summary_df, on='2Mass Name', how='left')
+        final_results_df = pd.merge(original_df, final_summary_df, on=['2Mass Name', 'ra', 'dec'], how='left')
         final_results_df.to_csv(options["data"]+"--result_df.csv",index=False)
         final_results_table = Table.from_pandas(final_results_df)
         print(final_results_table)
