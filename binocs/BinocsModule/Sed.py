@@ -1,6 +1,7 @@
 # BINOCS SED fitting subroutine
 from __future__ import print_function, division
 import numpy as np
+import pandas as pd
 import pyopencl as cl
 from time import time
 import sys, os
@@ -202,6 +203,16 @@ class Sed:
                 else: bflag = 1
         
             summary[s,:] = [mpri, upri, msec, usec, medchi, smass, umass, smchi, bflag]
+
+            column_names = [
+                'primary mass', 'primary mass err',
+                'secondary mass', 'secondary mass err',
+                'average Sigma', 'single star model mass',
+                'single star model mass err',
+                'average Sigma single star', 'binary flag'
+            ]
+
+            summary_df = pd.DataFrame(summary, columns=column_names)
             
-        return summary	
+        return summary, summary_df
         

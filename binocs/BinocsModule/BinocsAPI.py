@@ -182,7 +182,7 @@ class BinocsAPI:
         self.query.build_data_file_from_ra_dec(ra, dec, out_file_name,frame,radius)
 
     def binaryfit(self, options):
-        info, mag = self.readdataframe(options)
+        info, mag, original_df = self.readdataframe(options)
 
         oiso = self.readiso(options)
 
@@ -202,7 +202,7 @@ class BinocsAPI:
 
 
         # Compute Initial Results
-        summary = self.summarize(results, binary, singles)
+        summary, summary_df = self.summarize(results, binary, singles)
 
         self.print_initial_results(options, mag, info, summary)
 
@@ -216,7 +216,7 @@ class BinocsAPI:
         synth_results = self.sedfit(singles, binary, synth, options)
             
         # Compute Synthetic Results
-        synth_summary = self.summarize(synth_results, binary, singles)
+        synth_summary, synth_summary_df = self.summarize(synth_results, binary, singles)
 
         self.print_synthetic_results(options, synth, binary, synth_summary)
 
@@ -249,7 +249,7 @@ class BinocsAPI:
 
         #### UPDATED RESULTS
         print("\nUpdating results...")
-        self.print_final_results(options, mag, summary, minmass, minq_synth, minq_dm, info)
+        self.print_final_results(options, mag, summary, minmass, minq_synth, minq_dm, info, original_df)
 
     def buildIso(self, isopath, outpath):
         tmp = [x for x in subprocess.check_output("ls "+isopath+"*", shell=True).splitlines() if x.find('.dat') >= 0]

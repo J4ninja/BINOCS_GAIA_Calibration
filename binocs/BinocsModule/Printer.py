@@ -1,4 +1,4 @@
-
+import pandas as pd
 class Printer():
 
     def print_initial_results(self, options, mag, info, summary):
@@ -30,8 +30,9 @@ class Printer():
             print("%5.2f  %5.3f  %5.3f  %5.3f" % (m*minq_dm, minq_synth[m], minq_mod[m], max([minq_synth[m], minq_mod[m], 0.3])), file=out)
         out.close()
 
-    def print_final_results(self, options, mag, summary, minmass, minq_synth, minq_dm, info):
+    def print_final_results(self, options, mag, summary, minmass, minq_synth, minq_dm, info, original_df):
         print("    Writing updated results to '%s--results.txt'" % (options['data']))
+        final_results = []
         out = open(options['data']+"--results.txt", 'w')
         for s in range(mag.shape[0]):
             # Determine new binary flag and masses
@@ -47,9 +48,26 @@ class Printer():
                 # This star is a binary
                 mpri, mprie, msec, msece = summary[s,0], summary[s,1], summary[s,2], summary[s,3]
                 bflag = 2
+
+            star_info = [
+                info[s][0], info[s][1], info[s][2],  # star name, RA, Dec
+                bflag, info[s][3],  # binary flag, membership, 
+                mpri, mprie, msec, msece  # primary mass, uncertainty, secondary mass, uncertainty
+            ]
+            final_results.append(star_info)
             # Print out star to file
             outstr = "%16s %9.5f %9.5f " % (info[s][0], info[s][1], info[s][2])
             for i in range(17): outstr += "%6.3f " % mag[s,2*i]
             outstr += "   %2d %2d %6.3f %6.4f %6.3f %6.4f" % (bflag, info[s][3], mpri, mprie, msec, msece)
             print(outstr, file=out)
         out.close()	
+        column_names = [
+            '2Mass Name', 'ra', 'dec', 'Binary Flag', 'Membership',
+            'Primary Mass', 'Primary Mass Uncertainty', 
+            'Secondary Mass', 'Secondary Mass Uncertainty'
+        ]
+        final_summary_df = pd.DataFrame(final_results, columns=column_names)
+        final_results_df = pd.merge(original_df, final_summary_df, on='2Mass Name', how='left')
+        final_results_df.to_csv(options["data"]+"--result_df.csv",index=False)
+
+

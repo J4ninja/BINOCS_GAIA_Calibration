@@ -91,6 +91,12 @@ class Io:
         # info_columns = ["2MASS ID", "RA", "DEC", "RV"]
         # info_df = options_df.iloc[:, [0, 1, 2, 48]].copy()
         # info_df.columns = info_columns
+        for colname in options_df.columns:
+            if "err" in colname:
+                options_df[colname].fillna(9.999, inplace=True)
+            else:
+                options_df[colname].fillna(99.999, inplace=True)
+
         info_df = pd.DataFrame({
             "2Mass Name" : options_df["2Mass Name"],
             "ra" : options_df["ra"],
@@ -136,11 +142,8 @@ class Io:
             'B4_err' : options_df['B4_err'],
         })
 
-        mag_df = mag_df.fillna(99.999)
-        info_df = info_df.fillna(99.999)
-
         print("    %d stars in file." % (len(info_df)))
-        return info_df.to_numpy(), mag_df.to_numpy()
+        return info_df.to_numpy(), mag_df.to_numpy(), options_df
         
         
         

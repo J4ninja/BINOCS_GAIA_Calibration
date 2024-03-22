@@ -300,6 +300,7 @@ class Query:
         table = votable_file.get_first_table().to_table()
         gaia_2mass_df = table.to_pandas()
         gaia_2mass_df.rename(columns={'_2Mass_Name': '2Mass Name'}, inplace=True)
+        gaia_2mass_df.rename(columns={'SOURCE_ID': 'source_id'}, inplace=True)
         gaia_2mass_df.rename(columns={'_Wise_Id': 'Wise_Id'}, inplace=True)
 
         return gaia_2mass_df
