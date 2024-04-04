@@ -88,8 +88,8 @@ class GUI(tk.Tk):
         # Set default values
         defaults = {
             "data": "./ngc_ubvri_ugriz_jhkb_all_query.csv",
-            "iso": "./iso_p001.pc.syn.dat",
-            "fid": "./M67.fid.txt",
+            "iso": "../iso_p001.pc.syn.dat",
+            "fid": "../M67.fid.txt",
             "dm": "0.01",
             "age": "9.55",
             "m-M": "9.66",

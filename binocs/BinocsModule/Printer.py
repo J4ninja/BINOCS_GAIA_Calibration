@@ -1,5 +1,6 @@
 import pandas as pd
 from astropy.table import Table
+pd.set_option('display.float_format', lambda x: '%.16f' % x)
 class Printer():
 
     def print_initial_results(self, options, mag, info, summary):
@@ -69,9 +70,14 @@ class Printer():
         ]
         final_summary_df = pd.DataFrame(final_results, columns=column_names)
         final_results_df = pd.merge(original_df, final_summary_df, on=['2Mass Name', 'ra', 'dec'], how='left')
+        final_results_df['source_id'] = final_results_df['source_id'].astype(int)
+        final_results_df['2Mass Name'] = final_results_df['2Mass Name'].astype(str)
+        final_results_df['Wise_Id_x'] = final_results_df['Wise_Id_x'].astype(str)
+        final_results_df['Wise_Id_y'] = final_results_df['Wise_Id_y'].astype(str)
         final_results_df.to_csv(options["data"]+"--result_df.csv",index=False)
+        print(final_results_df.dtypes)
         final_results_table = Table.from_pandas(final_results_df)
         print(final_results_table)
-        # final_results_table.write(options['data'] + "--result_table.fits", format='fits', overwrite=True)
+        final_results_table.write(options['data'] + "--result_table.fits", format='fits', overwrite=True)
 
 
