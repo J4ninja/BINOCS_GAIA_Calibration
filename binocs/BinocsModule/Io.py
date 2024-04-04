@@ -74,7 +74,10 @@ class Io:
         sys.stdout.flush()
 
         # Read in options file as a dataframe delimited by any number of spaces
-        options_df = pd.read_csv(options['data'])
+        if ".fits" in options["data"]:
+            options_df = Table.read(options["data"]).to_pandas()
+        else:
+            options_df = pd.read_csv(options['data'])
 
         # Evaluate letters
         # condition_U = options_df.iloc[:, 48] == 'U'
