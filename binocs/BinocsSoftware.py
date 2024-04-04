@@ -35,7 +35,7 @@ class BinocsSoftware():
             search_radius = values_dict["search_radius"]
             search_radius_unit = values_dict["search_radius_unit"]
             frame = values_dict["frame"]
-            self.binocs.build_data_file_from_ra_dec(ra,dec, search_radius, search_radius_unit, frame, out_file_name)
+            self.binocs.build_data_file_from_ra_dec(ra=ra,dec=dec, frame=frame,radius_num=search_radius, radius_unit=search_radius_unit, out_file_name=out_file_name)
         elif input_method == "Cluster Name":
             cluster_name = values_dict["cluster_name"]
             search_radius = values_dict["search_radius"]

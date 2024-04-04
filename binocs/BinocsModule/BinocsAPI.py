@@ -168,7 +168,6 @@ class BinocsAPI:
         self.query.build_data_file_from_gaia(gaia_id_list, out_file_name)
 
     def build_data_file_from_cluster(self, cluster, radius_num, radius_unit, out_file_name):
-        radius = 1 * u.arcmin
         if radius_unit == "arcmin":
             radius = int(radius_num)*u.arcmin
         elif radius_unit == "arcsec":
@@ -176,7 +175,6 @@ class BinocsAPI:
         self.query.build_data_file_from_cluster(cluster, out_file_name, radius)
 
     def build_data_file_from_ra_dec(self, ra, dec, frame, radius_num, radius_unit, out_file_name):
-        radius = 1 * u.arcmin
         if radius_unit == "arcmin":
             radius = int(radius_num)*u.arcmin
         elif radius_unit == "arcsec":

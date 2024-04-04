@@ -437,7 +437,7 @@ class Query:
 
 
     def build_data_file_from_ra_dec(self, ra, dec, out_file_name, frame, radius=10*u.arcmin):
-        coords = SkyCoord(ra=ra, dec=dec, frame=frame)
+        coords = SkyCoord(ra=float(ra)*u.deg, dec=float(dec)*u.deg, frame=frame)
         irsa_data = Irsa.query_region(coords, catalog="fp_psc", spatial="Cone", radius=radius)
         twomass_df = pd.DataFrame({
             '2Mass Name': irsa_data['designation'],
