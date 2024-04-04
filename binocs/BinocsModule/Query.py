@@ -19,7 +19,15 @@ pd.set_option('display.max_columns', None)  # Display all columns
 pd.set_option('display.max_rows', None)  # Display all rows
 
 class Query:
-        
+    
+    def write_to_fits(self, out_file_name, df):
+        df['source_id'] = df['source_id'].astype(int)
+        df['2Mass Name'] = df['2Mass Name'].astype(str)
+        df['Wise_Id_x'] = df['Wise_Id_x'].astype(str)
+        df['Wise_Id_y'] = df['Wise_Id_y'].astype(str)
+        table = Table.from_pandas(df)
+        table.write(out_file_name + ".fits", format='fits', overwrite=True)
+
     def process_line(self, line):
         # Trim leading and trailing whitespaces, and replace multiple spaces with single space
         cleaned_line = ' '.join(line.strip().split())
@@ -361,7 +369,8 @@ class Query:
         
         merged_df = pd.merge(merged_df, jhk_b_bands_df, on="2Mass Name", how="outer")
         print(merged_df)
-        merged_df.to_csv(out_file_name, index=False)
+        merged_df.to_csv(out_file_name + ".csv", index=False)
+        self.write_to_fits(out_file_name,merged_df)
 
     def build_data_file_from_gaia(self, gaia_id_list, out_file_name):
         gaia_2mass_df = self.get_2mass_name_from_gaia_source_id_fast(gaia_id_list)
@@ -376,7 +385,8 @@ class Query:
         
         merged_df = pd.merge(merged_df, jhk_b_bands_df, on="2Mass Name", how="outer")
         print(merged_df)
-        merged_df.to_csv(out_file_name, index=False)
+        merged_df.to_csv(out_file_name  + ".csv", index=False)
+        self.write_to_fits(out_file_name,merged_df)
 
 
     def build_data_file_from_cluster(self, cluster, out_file_name, radius=10*u.arcmin):
@@ -422,7 +432,9 @@ class Query:
         synthetic = self.gaia_query_binocs_ids(merged_df["source_id"])
         self.calculate_mag_errors_synthetic(synthetic_photometry=synthetic)
         final_df = pd.merge(synthetic, merged_df, on="source_id", how="inner")
-        final_df.to_csv(out_file_name, index=False)
+        final_df.to_csv(out_file_name  + ".csv", index=False)
+        self.write_to_fits(out_file_name,final_df)
+
 
     def build_data_file_from_ra_dec(self, ra, dec, out_file_name, frame, radius=10*u.arcmin):
         coords = SkyCoord(ra=ra, dec=dec, frame=frame)
@@ -469,5 +481,7 @@ class Query:
         synthetic = self.gaia_query_binocs_ids(merged_df["source_id"])
         self.calculate_mag_errors_synthetic(synthetic_photometry=synthetic)
         final_df = pd.merge(synthetic, merged_df, on="source_id", how="inner")
-        final_df.to_csv(out_file_name, index=False)
+        final_df.to_csv(out_file_name  + ".csv", index=False)
+        self.write_to_fits(out_file_name,final_df)
+
 
