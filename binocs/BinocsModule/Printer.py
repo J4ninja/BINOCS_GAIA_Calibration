@@ -74,10 +74,10 @@ class Printer():
         final_results_df['2Mass Name'] = final_results_df['2Mass Name'].astype(str)
         final_results_df['Wise_Id_x'] = final_results_df['Wise_Id_x'].astype(str)
         final_results_df['Wise_Id_y'] = final_results_df['Wise_Id_y'].astype(str)
-        final_results_df.to_csv(options["data"]+"--result_df.csv",index=False)
+        final_results_df.to_csv(options["data"]+"--results.csv",index=False)
         print(final_results_df.dtypes)
         final_results_table = Table.from_pandas(final_results_df)
         print(final_results_table)
-        final_results_table.write(options['data'] + "--result_table.fits", format='fits', overwrite=True)
+        final_results_table.write(options['data'] + "--results.fits", format='fits', overwrite=True)
 
 
