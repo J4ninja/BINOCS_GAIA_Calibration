@@ -23,8 +23,9 @@ class Query:
     def write_to_fits(self, out_file_name, df):
         df['source_id'] = df['source_id'].astype(int)
         df['2Mass Name'] = df['2Mass Name'].astype(str)
-        df['Wise_Id_x'] = df['Wise_Id_x'].astype(str)
-        df['Wise_Id_y'] = df['Wise_Id_y'].astype(str)
+        for title in df.columns:
+            if "Wise_Id" in title:
+                df[title] = df[title].astype(str)
         table = Table.from_pandas(df)
         table.write(out_file_name + ".fits", format='fits', overwrite=True)
 
@@ -314,13 +315,14 @@ class Query:
         return gaia_2mass_df
     
     def get_2mass_name_from_gaia_source_id_fast(self, gaia_id_list):
-        gaia_id_query_strs = ','.join(["'{}'".format(name) for name in gaia_id_list])
-            
+        # gaia_id_query_strs = ','.join(["'{}'".format(name) for name in gaia_id_list])
+        # print(gaia_id_query_strs)
+        print(gaia_id_list)
         
         adql_query = """
         SELECT a.source_id, a.original_ext_source_id AS "2Mass_Name"
         FROM gaiadr3.tmass_psc_xsc_best_neighbour AS a
-        WHERE a.source_id IN ({})""".format(gaia_id_query_strs)
+        WHERE a.source_id IN ({})""".format(gaia_id_list)
 
         # Run the query
         job = Gaia.launch_job(adql_query)
@@ -329,6 +331,9 @@ class Query:
         table = votable_file.get_first_table().to_table()
         gaia_2mass_df = table.to_pandas()
         gaia_2mass_df.rename(columns={'_2Mass_Name': '2Mass Name'}, inplace=True)
+        gaia_2mass_df.rename(columns={'SOURCE_ID': 'source_id'}, inplace=True)
+        gaia_2mass_df.rename(columns={'_Wise_Id': 'Wise_Id'}, inplace=True)
+        print(gaia_2mass_df)
 
         return gaia_2mass_df
 

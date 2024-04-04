@@ -22,7 +22,7 @@ class BinocsSoftware():
         out_file_name = values_dict["out_file_name"]
         if input_method == "Id List":
             id_type = values_dict["id_type"]
-            id_list = values_dict["id_list"].split(",")
+            id_list = values_dict["id_list"]
             if id_type == "Gaia Source Id":
                 self.binocs.build_data_file_from_gaia(id_list, out_file_name)
             elif id_type == "2Mass Id":
@@ -327,7 +327,7 @@ def main():
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-g", "--gui", action="store_true", help="Launch GUI")
     group.add_argument("-o", "--opt", metavar="OPT_FILE", help="Specify an .opt file")
-    parser.add_argument("-i", "--iso", nargs=2, metavar=("ISOPATH", "OUTPATH"), help="Make ISO with specified ISO folder path and output path")
+    group.add_argument("-i", "--iso", nargs=2, metavar=("ISOPATH", "OUTPATH"), help="Make ISO with specified ISO folder path and output path")
 
     args = parser.parse_args()
 
@@ -352,6 +352,8 @@ def main():
         if not os.path.exists(isopath):
             print("Error: The specified iso path does not exist.")
             return
+        isopath = os.path.abspath(isopath)
+        outpath = os.path.abspath(outpath)
         binocs_software.buildIso(isopath, outpath)
 
 

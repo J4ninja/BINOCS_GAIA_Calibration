@@ -2,6 +2,7 @@
 from __future__ import print_function, division
 from __future__ import print_function, division
 import subprocess
+import os
 from BinocsModule.Io import Io
 from BinocsModule.SyntheticBin import SyntheticBin
 from BinocsModule.Iso import Iso
@@ -252,12 +253,12 @@ class BinocsAPI:
         self.print_final_results(options, mag, summary, minmass, minq_synth, minq_dm, info, original_df)
 
     def buildIso(self, isopath, outpath):
-        tmp = [x for x in subprocess.check_output("ls "+isopath+"*", shell=True).splitlines() if x.find('.dat') >= 0]
+        tmp = [x for x in subprocess.check_output("ls "+isopath+"*", shell=True).decode('utf-8').splitlines() if x.find('.dat') >= 0]
         if len(tmp) == 0:
             print("\n!!! Dartmouth Isochrones Detected.\n")
             self.dartmouth(isopath, outpath)
         else:
-            testfile = tmp[0]
+            testfile = os.path.abspath(isopath + "/" + tmp[0])
             df = open(testfile, 'r')
             lines = df.read().splitlines()
             df.close()
