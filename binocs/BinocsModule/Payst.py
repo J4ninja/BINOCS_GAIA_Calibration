@@ -487,7 +487,7 @@ class Payst:
             # Isochrone overplotting
             if choice == 5:
                 if isoplot == 0:
-                    isonames = subprocess.check_output('ls ~/Documents/projects/isochrones/new/*.dat', shell=True).splitlines()
+                    isonames = subprocess.check_output('ls ~/Documents/projects/isochrones/new/*.dat', shell=True).decode('utf-8').splitlines()
                     isoname = input('Enter isochrone name to overplot: ')
                     isoidx = [x for x in range(len(isonames)) if isonames[x].find(isoname) >= 0]
                     isof = open(isonames[isoidx[0]], "r")

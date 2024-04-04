@@ -22,7 +22,7 @@ class MakeIso:
                         7-23: UBVRIugrizJHK[3][4][5][8] magnitudes
         '''
         # Detect what files are present in path directory
-        webfiles = subprocess.check_output("ls "+path+"*.dat", shell=True).splitlines()
+        webfiles = subprocess.check_output("ls "+path+"*.dat", shell=True).decode('utf-8').splitlines()
         # Loop through detected files and get [Fe/H]
         webfeh, nlines = [], []
         for f in range(len(webfiles)):
@@ -108,7 +108,7 @@ class MakeIso:
                         7-23: UBVRIugrizJHK[3][4][5][8] magnitudes
         '''
         # Detect what files are present in path directory
-        webfiles = subprocess.check_output("ls "+path+"*.dat", shell=True).splitlines()
+        webfiles = subprocess.check_output("ls "+path+"*.dat", shell=True).decode('utf-8').splitlines()
         # Loop through detected files and get [Fe/H]
         webfeh, nlines = [], []
         for f in range(len(webfiles)):
@@ -189,7 +189,7 @@ class MakeIso:
                         7-23: UBVRIugrizJHK[3][4][5][8] magnitudes
         '''
         # Detect what files are present in path directory
-        webfiles = subprocess.check_output("ls "+path+"*.iso", shell=True).splitlines()
+        webfiles = subprocess.check_output("ls "+path+"*.iso", shell=True).decode('utf-8').splitlines()
         # Loop through detected files and get [Fe/H]
         webfeh, nlines = [], []
         for f in range(len(webfiles)):
