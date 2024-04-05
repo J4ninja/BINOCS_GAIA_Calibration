@@ -62,7 +62,17 @@ class GUI(tk.Tk):
         super().__init__()
         self.binocs = binocsController
 
-        self.geometry("1600x900")
+        self.geometry("780x520")
+        self.configure(bg="#7f0a29")
+
+        self.style = ttk.Style()
+        self.style.theme_create("CustomStyle", parent="alt", settings={
+            "TNotebook": {"configure": {"background": "#7f0a29"}},
+            "TNotebook.Tab": {"configure": {"background": "#c0c0c0", "foreground": "white"}},
+            "TNotebook.Tab": {"map": {"background": [("selected", "#ffffff")]}},
+        })
+        self.style.theme_use("CustomStyle")
+
 
         # Create notebook (tabs)
         self.notebook = ttk.Notebook(self)
@@ -170,19 +180,22 @@ class GUI(tk.Tk):
         self.frame_dropdown = ttk.Combobox(parent, values=["icrs", "fk5", "fk4", "galactic"], state="readonly", font=("Arial", 14))
         self.frame_dropdown.set("icrs")
 
-        self.frame_label.grid(row=2, column=3, sticky="e", padx=(10, 5), pady=10)
-        self.frame_dropdown.grid(row=2, column=4, padx=(0, 10), pady=5)
-
         self.output_file_label = tk.Label(parent, text="Output File Name", font=("Arial", 14))
-        self.output_file_label.grid(row=5, column=0, sticky="e", padx=5, pady=5)
         self.output_file_entry = tk.Entry(parent, font=("Arial", 14), width=30)
-        self.output_file_entry.grid(row=5, column=1, columnspan=2, padx=5, pady=5)
+
+        self.frame_label.grid(row=5, column=0, sticky="e", padx=(10, 5), pady=10)
+        self.frame_dropdown.grid(row=5, column=1, padx=(0, 10), pady=5)
 
         self.build_data_button = tk.Button(parent, text="Build Data", font=("Arial", 14), command=self.build_data)
-        self.build_data_button.grid(row=6, column=0, columnspan=6, pady=10)
+
+        self.output_file_label.grid(row=6, column=0, sticky="e", padx=5, pady=5)
+        self.output_file_entry.grid(row=6, column=1, columnspan=2, padx=5, pady=5)
+
+        self.build_data_button.grid(row=7, column=0, columnspan=6, pady=10)
 
         # Initially hide RA and DEC section
         self.on_input_method_change(tk.Event())
+
 
     def build_data(self):
         # Initialize an empty dictionary to store the values
@@ -238,8 +251,8 @@ class GUI(tk.Tk):
             self.ra_entry.grid(row=1, column=1, padx=(0, 10), pady=10)
             self.dec_label.grid(row=1, column=2, sticky="e", padx=(10, 5), pady=5)
             self.dec_entry.grid(row=1, column=3, padx=(0, 10), pady=10)
-            self.frame_label.grid(row=1, column=4, sticky="e", padx=(10, 5), pady=10)
-            self.frame_dropdown.grid(row=1, column=5, padx=(0, 10), pady=5)
+            self.frame_label.grid(row=2, column=0, sticky="e", padx=(10, 5), pady=10)
+            self.frame_dropdown.grid(row=2, column=1, padx=(0, 10), pady=5)
         elif selected_method == "Cluster Name":
             self.id_list_label.grid_forget()
             self.id_list_entry.grid_forget()
