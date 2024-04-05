@@ -90,7 +90,7 @@ class MakeIso:
 
 
 
-    def parsec(path, outpath):
+    def parsec(self, path, outpath):
         '''
         SUBROUTINE:			PARSEC
         DESCRIPTION: Converts files downloaded from PARSEC's CMD web interface [http://stev.oapd.inaf.it/cgi-bin/cmd] to a usable format
@@ -108,7 +108,7 @@ class MakeIso:
                         7-23: UBVRIugrizJHK[3][4][5][8] magnitudes
         '''
         # Detect what files are present in path directory
-        webfiles = subprocess.check_output("ls "+path+"*.dat", shell=True).decode('utf-8').splitlines()
+        webfiles = subprocess.check_output("ls "+path+"/*.dat", shell=True).decode('utf-8').splitlines()
         # Loop through detected files and get [Fe/H]
         webfeh, nlines = [], []
         for f in range(len(webfiles)):
@@ -117,6 +117,7 @@ class MakeIso:
             df.close()
             # Save [Fe/H] value for this file
             tmp = lines[11].split()
+            print(tmp)
             webfeh.append(float(tmp[10]))
             nlines.append(len(lines))
         # Find all unique [Fe/H] values, and print out formatted isochrone file

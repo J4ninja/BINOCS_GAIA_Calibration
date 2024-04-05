@@ -1,8 +1,8 @@
 # BINOCS Interface wraps submodule implementations into a single implementation
 from __future__ import print_function, division
-from __future__ import print_function, division
 import subprocess
 import os
+import numpy as np
 from BinocsModule.Io import Io
 from BinocsModule.SyntheticBin import SyntheticBin
 from BinocsModule.Iso import Iso
@@ -13,7 +13,6 @@ from BinocsModule.Payst import Payst
 from BinocsModule.Printer import Printer
 from BinocsModule.Query import Query
 from astropy import units as u
-import numpy as np
 
 class BinocsAPI:
     def __init__(self):
