@@ -5,7 +5,7 @@ import sys, binocs
 
 # Read in data from files
 options = binocs.readopt((sys.argv)[1])
-info, mag = binocs.readdata(options)
+info, mag = binocs.readdataframe(options)
 
 oiso = binocs.readiso(options)
 
@@ -92,7 +92,7 @@ out.close()
 #### UPDATED RESULTS
 print("\nUpdating results...")
 print("    Writing updated results to '%s--results.txt'" % (options['data']))
-out = open(options['data']+"--resultsJohn1.txt", 'w')
+out = open(options['data']+"--resultsDataFrame.txt", 'w')
 for s in range(mag.shape[0]):
 	# Determine new binary flag and masses
 	if summary[s,0] == 0:
