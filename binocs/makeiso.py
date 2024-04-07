@@ -12,7 +12,7 @@ if len(sys.argv) < 3:
 # If necessary paths are specified, run makeiso
 else: 
 	isopath, outpath = sys.argv[1], sys.argv[2]
-	tmp = [x for x in subprocess.check_output("ls "+isopath+"*", shell=True).splitlines() if x.find('.dat') >= 0]
+	tmp = [x for x in subprocess.check_output("ls "+isopath+"*", shell=True).decode("utf-8").splitlines() if x.find('.dat') >= 0]
 	if len(tmp) == 0:
 		print("\n!!! Dartmouth Isochrones Detected.\n")
 		dartmouth(isopath, outpath)
